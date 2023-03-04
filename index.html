@@ -54,13 +54,8 @@
   <div class="intro">
     <h4>Introduce la información que quieras grabar</h4>
     <div class="formulario">
-      <form name="enviar" id="enviar" action="#" method="get">
-
-
-        <div contenteditable class="texto" id="content"></div>
-
-
-
+      <form name="enviar" id="enviar" action="guardar.php" method="post">
+        <input type="text" name="contenido" id="contenido" />
         <input type="submit" name="enviar" id="guardar" value="Guardar información" />
 
       </form>
@@ -68,66 +63,13 @@
 
   </div>
   <div class="intro">
-    <h4>Aquí podrás recuperar la información que guardaste</h4>
-    <input type="submit" name="recuperar" id="recuperar" value="Recupera información" />
-    <div contenteditable class="salida" id="lectura"></div>
+    <form name="enviar" id="enviar" action="recuperar.php" method="get">
+      <h4>Aquí podrás recuperar la información que guardaste</h4>
+      <input type="submit" name="recuperar" id="recuperar" value="Recupera información" />
+    </form>
   </div>
 
 
 </body>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-  console.log("entro en js");
-  document.getElementById("guardar").addEventListener("click", updateInfo, false);
-  document.getElementById("recuperar").addEventListener("click", getInfo, false);
-
-  /*--Functions--*/
-  async function updateInfo(e, form) {
-    // 1. Prevent reloading page
-    e.preventDefault();
-    // 2. Submit the form
-    // 2.1 User Interaction
-    const btnSubmit = document.getElementById("guardar");
-    btnSubmit.disabled = true;
-    setTimeout(() => (btnSubmit.disabled = false), 1000);
-
-    const contenido = document.getElementById("content").textContent;
-
-    try {
-      let result = axios
-        .post("http://localhost:3000/write", null, {
-          params: {
-            content: contenido
-          }
-        })
-        .then(function (res) {
-          if (res.status == 200) {
-            alert("El texto ha sido guardado con éxito");
-          }
-        });
-
-    } catch (error) {
-      console.error(JSON.stringify(error.data));
-    }
-  }
-
-  async function getInfo(e) {
-    // 1. Prevent reloading page
-    e.preventDefault();
-    // 2. Submit the form
-    // 2.1 User Interaction
-
-    axios.get("http://localhost:3000/read", {}).then(function (res) {
-      if (res.status = 200) {
-        alert("texto recuperado correctamente");
-        document.getElementById("lectura").textContent = res.data.Title;
-      }
-      else {
-        alert("No se ha podido recuperar el texto");
-      }
-
-    });
-  }
-</script>
 
 </html>
