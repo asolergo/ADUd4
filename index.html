@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ud2 by Antonio Soler</title>
+  <style type="text/css">
+    body {
+      padding: 70px;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .texto,
+    .salida {
+      border: 1px solid black;
+      width: 30rem;
+      padding: 0.5rem;
+      min-height: 3rem;
+
+    }
+
+    .salida {
+      pointer-events: none;
+    }
+
+    .texto:empty::before {
+      position: absolute;
+      content: "Escribe aquí...";
+
+    }
+
+    .intro {
+
+      border-color: grey;
+      border-width: 2px;
+      border-radius: 2px;
+      border-style: solid;
+      padding: 5%;
+      margin: 5%;
+
+    }
+
+    #recuperar {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="intro">
+    <h4>Introduce la información que quieras grabar</h4>
+    <div class="formulario">
+      <form name="enviar" id="enviar" action="#" method="get">
+
+
+        <div contenteditable class="texto" id="content"></div>
+
+
+
+        <input type="submit" name="enviar" id="guardar" value="Guardar información" />
+
+      </form>
+    </div>
+
+  </div>
+  <div class="intro">
+    <h4>Aquí podrás recuperar la información que guardaste</h4>
+    <input type="submit" name="recuperar" id="recuperar" value="Recupera información" />
+    <div contenteditable class="salida" id="lectura"></div>
+  </div>
+
+
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  console.log("entro en js");
+  document.getElementById("guardar").addEventListener("click", updateInfo, false);
+  document.getElementById("recuperar").addEventListener("click", getInfo, false);
+
+  /*--Functions--*/
+  async function updateInfo(e, form) {
+    // 1. Prevent reloading page
+    e.preventDefault();
+    // 2. Submit the form
+    // 2.1 User Interaction
+    const btnSubmit = document.getElementById("guardar");
+    btnSubmit.disabled = true;
+    setTimeout(() => (btnSubmit.disabled = false), 1000);
+
+    const contenido = document.getElementById("content").textContent;
+
+    try {
+      let result = axios
+        .post("http://localhost:3000/write", null, {
+          params: {
+            content: contenido
+          }
+        })
+        .then(function (res) {
+          if (res.status == 200) {
+            alert("El texto ha sido guardado con éxito");
+          }
+        });
+
+    } catch (error) {
+      console.error(JSON.stringify(error.data));
+    }
+  }
+
+  async function getInfo(e) {
+    // 1. Prevent reloading page
+    e.preventDefault();
+    // 2. Submit the form
+    // 2.1 User Interaction
+
+    axios.get("http://localhost:3000/read", {}).then(function (res) {
+      if (res.status = 200) {
+        alert("texto recuperado correctamente");
+        document.getElementById("lectura").textContent = res.data.Title;
+      }
+      else {
+        alert("No se ha podido recuperar el texto");
+      }
+
+    });
+  }
+</script>
+
+</html>
